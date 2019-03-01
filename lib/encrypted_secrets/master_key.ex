@@ -20,14 +20,9 @@ defmodule EncryptedSecrets.MasterKey do
   end
 
   defp save_master_key(key, filepath) do
-    case File.open(filepath, [:write]) do
-      {:ok, file} ->
-        IO.binwrite(file, key)
-        File.close(file)
-        {:ok, filepath}
-
-      {:error, message} ->
-        {:error, "Unable to write master key to file '#{filepath}' (#{message})"}
+    case File.write(filepath, key) do
+      :ok -> {:ok, filepath}
+      {:error, err} -> {:error, "Error writing master key to '#{filepath}' (#{err})"}
     end
   end
 end

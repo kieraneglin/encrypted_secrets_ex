@@ -54,7 +54,7 @@ defmodule EncryptedSecretsTest.MasterKeyTest do
       {:error, error_message} = EncryptedSecrets.MasterKey.create(filepath)
 
       refute File.exists?(filepath)
-      assert String.contains?(error_message, "Unable to write to file")
+      assert String.contains?(error_message, "Error writing master key")
     end
 
     test "returned error message includes the original FS error" do

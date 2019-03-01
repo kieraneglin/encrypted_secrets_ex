@@ -21,14 +21,9 @@ defmodule EncryptedSecrets.WriteSecrets do
   end
 
   defp write_encrypted_file(encrypted_string, output_path) do
-    case File.open(output_path, [:write]) do
-      {:ok, file} ->
-        IO.binwrite(file, encrypted_string)
-        File.close(file)
-        {:ok, output_path}
-
-      {:error, message} ->
-        {:error, "Unable to write secrets to file '#{output_path}' (#{message})"}
+    case File.write(output_path, encrypted_string) do
+      :ok -> {:ok, output_path}
+      {:error, err} -> {:error, "Error writing secrets to '#{output_path}' (#{err})"}
     end
   end
 end
