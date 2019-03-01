@@ -8,7 +8,7 @@ defmodule EncryptedSecrets.MasterKey do
 
     Returns `{:ok, filepath} | {:error, error}`
   """
-  def create_master_key(filepath) do
+  def create(filepath) do
     create_random_key()
     |> save_master_key(filepath)
   end
