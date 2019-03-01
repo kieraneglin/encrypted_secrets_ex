@@ -8,7 +8,7 @@ defmodule EncryptedSecrets.WriteSecrets do
   defp read_input_file(input_path) do
     case File.read(input_path) do
       {:ok, contents} -> contents
-      {:error, message} -> throw("Unable to read input file: #{message}")
+      {:error, err} -> throw("Error reading '#{input_path}' (#{err})")
     end
   end
 
@@ -23,7 +23,7 @@ defmodule EncryptedSecrets.WriteSecrets do
   defp write_encrypted_file(encrypted_string, output_path) do
     case File.write(output_path, encrypted_string) do
       :ok -> {:ok, output_path}
-      {:error, err} -> {:error, "Error writing secrets to '#{output_path}' (#{err})"}
+      {:error, err} -> throw("Error writing secrets to '#{output_path}' (#{err})")
     end
   end
 end
