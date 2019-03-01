@@ -14,7 +14,9 @@ defmodule EncryptedSecrets.MasterKey do
   end
 
   defp create_random_key do
-    :crypto.strong_rand_bytes(64) |> Base.encode16()
+    {:ok, key} = ExCrypto.generate_aes_key(:aes_256, :base64)
+
+    key
   end
 
   defp save_master_key(key, filepath) do
@@ -25,7 +27,7 @@ defmodule EncryptedSecrets.MasterKey do
         {:ok, filepath}
 
       {:error, message} ->
-        {:error, "Unable to write to file '#{filepath}' (#{message})"}
+        {:error, "Unable to write master key to file '#{filepath}' (#{message})"}
     end
   end
 end

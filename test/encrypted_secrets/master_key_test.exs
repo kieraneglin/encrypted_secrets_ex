@@ -34,14 +34,16 @@ defmodule EncryptedSecretsTest.MasterKeyTest do
       end
     end
 
-    test "the created file has 128 characters" do
+    # The length of our base-64 encoded keys is 44 chars
+    # NOTE: Is this a valid test? Why do
+    test "the created file has 44 characters" do
       filepath = File.cwd!() <> "/test/tmp/master.key"
 
       try do
         EncryptedSecrets.MasterKey.create(filepath)
         result = File.read!(filepath)
 
-        assert 128 == String.length(result)
+        assert 44 == String.length(result)
       after
         File.rm(filepath)
       end
