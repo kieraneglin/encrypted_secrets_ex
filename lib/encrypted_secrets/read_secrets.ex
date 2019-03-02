@@ -1,10 +1,25 @@
 defmodule EncryptedSecrets.ReadSecrets do
+  @moduledoc """
+    Provides methods for reading encrypted secrets into unencrypted maps or files
+  """
+
+  @doc """
+    Reads encrypted secrets file at `input_path` using `key`, returning a map
+
+    Returns `{:ok, secrets_map} | {:error, message}`
+  """
   def read_into_map(key, input_path) do
     read_encrypted_file(input_path)
     |> unencrypt_file_contents(key)
     |> parse_yaml()
   end
 
+  @doc """
+    Reads encrypted secrets file at `input_path` using `key`,
+     saving results in a tempfile
+
+    Returns `{:ok, temp_filepath} | throw`
+  """
   def read_into_file(key, input_path) do
     read_encrypted_file(input_path)
     |> unencrypt_file_contents(key)
