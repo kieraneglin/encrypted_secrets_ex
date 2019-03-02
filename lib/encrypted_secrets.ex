@@ -4,6 +4,21 @@ defmodule EncryptedSecrets do
   alias EncryptedSecrets.WriteSecrets, as: WriteSecrets
 
   def setup(key_path \\ "config/master.key", secrets_path \\ "config/secrets.yml") do
+    if File.exists?(key_path) || File.exists?(secrets_path) do
+      IO.puts("This will remove your existing secrets and give you a new master key")
+      IO.puts("Continue? (y/N)")
+      input_string = IO.read(:stdio, :line) |> String.trim() |> String.downcase()
+
+      cond do
+        String.starts_with?(input_string, "y") -> setup!(key_path, secrets_path)
+        true -> {:error, "Operation aborted"}
+      end
+    else
+      setup!(key_path, secrets_path)
+    end
+  end
+
+  def setup!(key_path \\ "config/master.key", secrets_path \\ "config/secrets.yml") do
     MasterKey.create(key_path)
     WriteSecrets.write_blank_file(File.read!(key_path), secrets_path)
   end
