@@ -6,8 +6,9 @@ defmodule EncryptedSecrets do
   alias EncryptedSecrets.ReadSecrets, as: ReadSecrets
   alias EncryptedSecrets.WriteSecrets, as: WriteSecrets
 
-  @secrets_file_location "config/secrets.yml"
-  @key_file_location "config/master.key"
+  @base_directory "config/secrets"
+  @secrets_file_location @base_directory <> "/secrets.yml.enc"
+  @key_file_location @base_directory <> "/master.key"
 
   @doc """
     Creates a new key and secrets file, prompting you if the files already exist
@@ -17,7 +18,6 @@ defmodule EncryptedSecrets do
   def setup(key_path \\ @key_file_location, secrets_path \\ @secrets_file_location) do
     success_message = "Operation completed! Make sure #{key_path} is in your .gitignore"
 
-    # TODO `cond` felt cumbersome here, but if seems anti-elixir.  Investigate
     if File.exists?(key_path) || File.exists?(secrets_path) do
       IO.puts("This will remove your existing secrets and give you a new master key")
       IO.puts("Continue? (y/N)")
@@ -35,6 +35,8 @@ defmodule EncryptedSecrets do
     else
       setup!(key_path, secrets_path)
       IO.puts(success_message)
+
+      {:ok, secrets_path}
     end
   end
 
@@ -45,6 +47,7 @@ defmodule EncryptedSecrets do
     Returns `{:ok, secrets_path} | {:error, message}`
   """
   def setup!(key_path \\ @key_file_location, secrets_path \\ @secrets_file_location) do
+    File.mkdir_p!(@base_directory)
     MasterKey.create(key_path)
     WriteSecrets.write_blank_file(File.read!(key_path), secrets_path)
   end
