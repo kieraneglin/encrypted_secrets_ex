@@ -7,11 +7,22 @@ defmodule EncryptedSecrets.WriteSecrets do
     Reads the contents of `input_path`, encrypts it using `key`,
      and writes it to `output_path`
 
-    Returns `{:ok, filepath} | throw`
+    Returns `{:ok, filepath} | {:error, message}`
   """
   def write_file(key, input_path, output_path) do
     read_input_file(input_path)
     |> encrypt_message(key)
+    |> write_encrypted_file(output_path)
+  end
+
+  @doc """
+    Writes an encrypted blank file to `output_path` using `key`.
+     Used for first time setup
+
+    Returns `{:ok, filepath} | {:error, message}`
+  """
+  def write_blank_file(key, output_path) do
+    encrypt_message("", key)
     |> write_encrypted_file(output_path)
   end
 
@@ -24,10 +35,10 @@ defmodule EncryptedSecrets.WriteSecrets do
 
   defp encrypt_message(input_text, key) do
     {:ok, {init_vec, cipher_text}} =
-      Base.url_decode64!(key)
+      Base.decode16!(key)
       |> ExCrypto.encrypt(input_text)
 
-    {Base.url_encode64(init_vec), Base.url_encode64(cipher_text)}
+    {Base.encode16(init_vec), Base.encode16(cipher_text)}
   end
 
   defp write_encrypted_file({init_vec, cipher_text}, output_path) do

@@ -36,9 +36,9 @@ defmodule EncryptedSecrets.ReadSecrets do
   defp unencrypt_file_contents(input_text, key) do
     [init_vec, cipher_text] =
       String.split(input_text, "|")
-      |> Enum.map(&Base.url_decode64!/1)
+      |> Enum.map(&Base.decode16!/1)
 
-    case ExCrypto.decrypt(Base.url_decode64!(key), init_vec, cipher_text) do
+    case ExCrypto.decrypt(Base.decode16!(key), init_vec, cipher_text) do
       {:ok, contents} -> contents
       {:error, err} -> throw("Error decrypting secrets (#{err})")
     end

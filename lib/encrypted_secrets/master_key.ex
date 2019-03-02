@@ -14,9 +14,9 @@ defmodule EncryptedSecrets.MasterKey do
   end
 
   defp create_random_key do
-    {:ok, key} = ExCrypto.generate_aes_key(:aes_256, :base64)
+    {:ok, key} = ExCrypto.generate_aes_key(:aes_256, :bytes)
 
-    key
+    Base.encode16(key)
   end
 
   defp save_master_key(key, output_path) do
