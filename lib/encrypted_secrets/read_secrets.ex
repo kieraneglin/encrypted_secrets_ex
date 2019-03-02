@@ -3,6 +3,8 @@ defmodule EncryptedSecrets.ReadSecrets do
     Provides methods for reading encrypted secrets into unencrypted maps or files
   """
 
+  alias EncryptedSecrets.Helpers, as: Helpers
+
   @doc """
     Reads encrypted secrets file at `input_path` using `key`, returning a map
 
@@ -12,8 +14,8 @@ defmodule EncryptedSecrets.ReadSecrets do
     read_encrypted_file(input_path)
     |> unencrypt_file_contents(key)
     |> parse_yaml()
+    |> Helpers.convert_map_keys()
   rescue
-    e in File.Error -> {:error, e.message}
     e in RuntimeError -> {:error, e.message}
     e in ArgumentError -> {:error, e.message}
   end
@@ -29,7 +31,6 @@ defmodule EncryptedSecrets.ReadSecrets do
     |> unencrypt_file_contents(key)
     |> write_temp_file(input_path)
   rescue
-    e in File.Error -> {:error, e.message}
     e in RuntimeError -> {:error, e.message}
     e in ArgumentError -> {:error, e.message}
   end

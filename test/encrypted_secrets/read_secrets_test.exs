@@ -14,7 +14,7 @@ defmodule EncryptedSecretsTest.ReadSecretsTest do
     test "successfully reads encrypted secrets into map" do
       {:ok, secrets} = ReadSecrets.read_into_map(@key_contents, @enc_secrets)
 
-      assert %{"foo" => %{"bar" => "baz"}} == secrets
+      assert %{foo: %{bar: "baz"}} == secrets
     end
 
     test "returns error if input file can't be read" do

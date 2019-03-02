@@ -14,7 +14,6 @@ defmodule EncryptedSecrets.WriteSecrets do
     |> encrypt_message(key)
     |> write_encrypted_file(output_path)
   rescue
-    e in File.Error -> {:error, e.message}
     e in RuntimeError -> {:error, e.message}
     e in ArgumentError -> {:error, e.message}
   end
@@ -29,7 +28,6 @@ defmodule EncryptedSecrets.WriteSecrets do
     encrypt_message("", key)
     |> write_encrypted_file(output_path)
   rescue
-    e in File.Error -> {:error, e.message}
     e in RuntimeError -> {:error, e.message}
     e in ArgumentError -> {:error, e.message}
   end
@@ -50,7 +48,6 @@ defmodule EncryptedSecrets.WriteSecrets do
   end
 
   defp write_encrypted_file({init_vec, cipher_text}, output_path) do
-    # TODO: This is smelly - is there a better way to store the IV
     encrypted_string = "#{init_vec}|#{cipher_text}"
 
     case File.write(output_path, encrypted_string) do
