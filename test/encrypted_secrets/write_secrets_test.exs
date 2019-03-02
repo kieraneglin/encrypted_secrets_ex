@@ -1,4 +1,4 @@
-defmodule EncryptedSecretsTest.WriteSecretsTask do
+defmodule EncryptedSecretsTest.WriteSecretsTest do
   use ExUnit.Case
   alias EncryptedSecrets.WriteSecrets, as: WriteSecrets
   doctest EncryptedSecrets.WriteSecrets

@@ -14,6 +14,7 @@ defmodule EncryptedSecrets.ReadSecrets do
     |> parse_yaml()
   rescue
     e in RuntimeError -> {:error, e.message}
+    e in ArgumentError -> {:error, e.message}
   end
 
   @doc """
@@ -28,6 +29,7 @@ defmodule EncryptedSecrets.ReadSecrets do
     |> write_temp_file(input_path)
   rescue
     e in RuntimeError -> {:error, e.message}
+    e in ArgumentError -> {:error, e.message}
   end
 
   defp read_encrypted_file(input_path) do
