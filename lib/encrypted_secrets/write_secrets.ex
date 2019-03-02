@@ -36,7 +36,7 @@ defmodule EncryptedSecrets.WriteSecrets do
 
     case File.write(output_path, encrypted_string) do
       :ok -> {:ok, output_path}
-      {:error, err} -> throw("Error writing secrets to '#{output_path}' (#{err})")
+      {:error, err} -> {:error, "Error writing secrets to '#{output_path}' (#{err})"}
     end
   end
 end

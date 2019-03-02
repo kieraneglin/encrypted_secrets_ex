@@ -18,7 +18,7 @@ defmodule EncryptedSecrets.ReadSecrets do
     Reads encrypted secrets file at `input_path` using `key`,
      saving results in a tempfile
 
-    Returns `{:ok, temp_filepath} | throw`
+    Returns `{:ok, temp_filepath} | {:error, message}`
   """
   def read_into_file(key, input_path) do
     read_encrypted_file(input_path)
@@ -57,7 +57,7 @@ defmodule EncryptedSecrets.ReadSecrets do
 
     case File.write(filename, yaml_string) do
       :ok -> {:ok, filename}
-      {:error, err} -> throw("Error creating tempfile (#{err})")
+      {:error, err} -> {:error, "Error creating tempfile (#{err})"}
     end
   end
 end
