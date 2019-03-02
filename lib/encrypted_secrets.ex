@@ -15,6 +15,8 @@ defmodule EncryptedSecrets do
     Returns `{:ok, secrets_path} | {:error, message}`
   """
   def setup(key_path \\ @key_file_location, secrets_path \\ @secrets_file_location) do
+    success_message = "Operation completed! Make sure #{key_path} is in your .gitignore"
+
     # TODO `cond` felt cumbersome here, but if seems anti-elixir.  Investigate
     if File.exists?(key_path) || File.exists?(secrets_path) do
       IO.puts("This will remove your existing secrets and give you a new master key")
@@ -24,7 +26,7 @@ defmodule EncryptedSecrets do
       cond do
         String.starts_with?(input_string, "y") ->
           setup!(key_path, secrets_path)
-          IO.puts("Operation completed! Make sure #{key_path} is in your .gitignore")
+          IO.puts(success_message)
           {:ok, secrets_path}
 
         true ->
@@ -32,6 +34,7 @@ defmodule EncryptedSecrets do
       end
     else
       setup!(key_path, secrets_path)
+      IO.puts(success_message)
     end
   end
 
@@ -53,13 +56,16 @@ defmodule EncryptedSecrets do
     Returns `:ok | {:error, message}`
   """
   def edit(key \\ File.read!(@key_file_location), secrets_path \\ @secrets_file_location) do
-    {:ok, tmp_filepath} = ReadSecrets.read_into_file(key, secrets_path)
+    ensure_editor_set()
 
+    {:ok, tmp_filepath} = ReadSecrets.read_into_file(key, secrets_path)
     [editor | options] = String.split(System.get_env("EDITOR"), " ")
     {_retval, 0} = System.cmd(editor, options ++ [tmp_filepath])
 
     {:ok, _path} = WriteSecrets.write_file(key, tmp_filepath, secrets_path)
     File.rm(tmp_filepath)
+
+    IO.puts("Secrets saved")
   end
 
   @doc """
@@ -81,6 +87,13 @@ defmodule EncryptedSecrets do
     case ReadSecrets.read_into_map(key, secrets_path) do
       {:ok, secrets_map} -> secrets_map
       {:error, _err} -> raise "Could not read secrets file"
+    end
+  end
+
+  defp ensure_editor_set() do
+    case System.get_env("EDITOR") do
+      nil -> raise "EDITOR must be set.  For example, EDITOR='code --wait' <command>"
+      _ -> nil
     end
   end
 end
