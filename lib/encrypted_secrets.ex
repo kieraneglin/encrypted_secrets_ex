@@ -48,7 +48,7 @@ defmodule EncryptedSecrets do
 
   @doc """
     Decrypts, opens, and saves secrets file.  Your EDITOR must be in "wait" mode.
-     For example EDITOR='code --wait'
+     For example `EDITOR='code --wait'`
 
     Returns `:ok | {:error, message}`
   """
