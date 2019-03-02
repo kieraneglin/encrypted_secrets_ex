@@ -1,4 +1,7 @@
 defmodule EncryptedSecrets do
+  @moduledoc """
+    Provides methods for setting up, editing, and reading of encrypted secrets
+  """
   alias EncryptedSecrets.MasterKey, as: MasterKey
   alias EncryptedSecrets.ReadSecrets, as: ReadSecrets
   alias EncryptedSecrets.WriteSecrets, as: WriteSecrets
@@ -6,6 +9,11 @@ defmodule EncryptedSecrets do
   @secrets_file_location "config/secrets.yml"
   @key_file_location "config/master.key"
 
+  @doc """
+    Creates a new key and secrets file, prompting you if the files already exist
+
+    Returns `{:ok, secrets_path} | {:error, message}`
+  """
   def setup(key_path \\ @key_file_location, secrets_path \\ @secrets_file_location) do
     # TODO `cond` felt cumbersome here, but if seems anti-elixir.  Investigate
     if File.exists?(key_path) || File.exists?(secrets_path) do
@@ -27,11 +35,23 @@ defmodule EncryptedSecrets do
     end
   end
 
+  @doc """
+    Creates a new key and secrets file, automatically overwriting files if they exist.
+     Use with caution
+
+    Returns `{:ok, secrets_path} | {:error, message}`
+  """
   def setup!(key_path \\ @key_file_location, secrets_path \\ @secrets_file_location) do
     MasterKey.create(key_path)
     WriteSecrets.write_blank_file(File.read!(key_path), secrets_path)
   end
 
+  @doc """
+    Decrypts, opens, and saves secrets file.  Your EDITOR must be in "wait" mode.
+     For example EDITOR='code --wait'
+
+    Returns `:ok | {:error, message}`
+  """
   def edit(key \\ File.read!(@key_file_location), secrets_path \\ @secrets_file_location) do
     {:ok, tmp_filepath} = ReadSecrets.read_into_file(key, secrets_path)
 
@@ -42,13 +62,25 @@ defmodule EncryptedSecrets do
     File.rm(tmp_filepath)
   end
 
+  @doc """
+    Decrypts and parses secrets file, returning it as a map
+
+    Returns `{:ok, secrets_map} | {:error, message}`
+  """
   def read(key \\ File.read!(@key_file_location), secrets_path \\ @secrets_file_location) do
     ReadSecrets.read_into_map(key, secrets_path)
   end
 
-  def read!(key \\ File.read!(@key_file_location), secrets_path \\ @secrets_file_location) do
-    {:ok, secrets_map} = ReadSecrets.read_into_map(key, secrets_path)
+  @doc """
+    Decrypts and parses secrets file, returning it as a map.
+     Raises an exception if file can't be read
 
-    secrets_map
+    Returns `{:ok, secrets_map}`
+  """
+  def read!(key \\ File.read!(@key_file_location), secrets_path \\ @secrets_file_location) do
+    case ReadSecrets.read_into_map(key, secrets_path) do
+      {:ok, secrets_map} -> secrets_map
+      {:error, _err} -> raise "Could not read secrets file"
+    end
   end
 end
