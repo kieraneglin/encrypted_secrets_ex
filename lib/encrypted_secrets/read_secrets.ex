@@ -12,8 +12,8 @@ defmodule EncryptedSecrets.ReadSecrets do
     read_encrypted_file(input_path)
     |> unencrypt_file_contents(key)
     |> parse_yaml()
-  catch
-    _, err -> {:error, err}
+  rescue
+    e in RuntimeError -> {:error, e.message}
   end
 
   @doc """
@@ -26,14 +26,14 @@ defmodule EncryptedSecrets.ReadSecrets do
     read_encrypted_file(input_path)
     |> unencrypt_file_contents(key)
     |> write_temp_file(input_path)
-  catch
-    _, err -> {:error, err}
+  rescue
+    e in RuntimeError -> {:error, e.message}
   end
 
   defp read_encrypted_file(input_path) do
     case File.read(input_path) do
       {:ok, contents} -> contents
-      {:error, err} -> throw("Error reading '#{input_path}' (#{err})")
+      {:error, err} -> raise "Error reading '#{input_path}' (#{err})"
     end
   end
 
@@ -44,7 +44,7 @@ defmodule EncryptedSecrets.ReadSecrets do
 
     case ExCrypto.decrypt(Base.decode16!(key), init_vec, cipher_text) do
       {:ok, contents} -> contents
-      {:error, err} -> throw("Error decrypting secrets (#{err})")
+      {:error, err} -> raise "Error decrypting secrets (#{err})"
     end
   end
 
