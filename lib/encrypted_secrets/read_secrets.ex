@@ -12,6 +12,8 @@ defmodule EncryptedSecrets.ReadSecrets do
     read_encrypted_file(input_path)
     |> unencrypt_file_contents(key)
     |> parse_yaml()
+  catch
+    _, err -> {:error, err}
   end
 
   @doc """
@@ -24,6 +26,8 @@ defmodule EncryptedSecrets.ReadSecrets do
     read_encrypted_file(input_path)
     |> unencrypt_file_contents(key)
     |> write_temp_file(input_path)
+  catch
+    _, err -> {:error, err}
   end
 
   defp read_encrypted_file(input_path) do

@@ -11,6 +11,8 @@ defmodule EncryptedSecrets.MasterKey do
   def create(output_path) do
     create_random_key()
     |> save_master_key(output_path)
+  catch
+    _, err -> {:error, err}
   end
 
   defp create_random_key do

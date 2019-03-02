@@ -5,7 +5,6 @@ defmodule EncryptedSecrets do
 
   @secrets_file_location "config/secrets.yml"
   @key_file_location "config/master.key"
-  @key_file_contents File.read!(@key_file_location)
 
   def setup(key_path \\ @key_file_location, secrets_path \\ @secrets_file_location) do
     # TODO `cond` felt cumbersome here, but if seems anti-elixir.  Investigate
@@ -18,6 +17,7 @@ defmodule EncryptedSecrets do
         String.starts_with?(input_string, "y") ->
           setup!(key_path, secrets_path)
           IO.puts("Operation completed! Make sure #{key_path} is in your .gitignore")
+          {:ok, secrets_path}
 
         true ->
           {:error, "Operation aborted"}
@@ -32,21 +32,21 @@ defmodule EncryptedSecrets do
     WriteSecrets.write_blank_file(File.read!(key_path), secrets_path)
   end
 
-  def edit(key \\ @key_file_contents, secrets_path \\ @secrets_file_location) do
+  def edit(key \\ File.read!(@key_file_location), secrets_path \\ @secrets_file_location) do
     {:ok, tmp_filepath} = ReadSecrets.read_into_file(key, secrets_path)
 
     [editor | options] = String.split(System.get_env("EDITOR"), " ")
     {_retval, 0} = System.cmd(editor, options ++ [tmp_filepath])
 
     {:ok, _path} = WriteSecrets.write_file(key, tmp_filepath, secrets_path)
-    :ok = File.rm(tmp_filepath)
+    File.rm(tmp_filepath)
   end
 
-  def read(key \\ @key_file_contents, secrets_path \\ @secrets_file_location) do
+  def read(key \\ File.read!(@key_file_location), secrets_path \\ @secrets_file_location) do
     ReadSecrets.read_into_map(key, secrets_path)
   end
 
-  def read!(key \\ @key_file_contents, secrets_path \\ @secrets_file_location) do
+  def read!(key \\ File.read!(@key_file_location), secrets_path \\ @secrets_file_location) do
     {:ok, secrets_map} = ReadSecrets.read_into_map(key, secrets_path)
 
     secrets_map

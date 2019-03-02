@@ -13,6 +13,8 @@ defmodule EncryptedSecrets.WriteSecrets do
     read_input_file(input_path)
     |> encrypt_message(key)
     |> write_encrypted_file(output_path)
+  catch
+    _, err -> {:error, err}
   end
 
   @doc """
@@ -24,6 +26,8 @@ defmodule EncryptedSecrets.WriteSecrets do
   def write_blank_file(key, output_path) do
     encrypt_message("", key)
     |> write_encrypted_file(output_path)
+  catch
+    _, err -> {:error, err}
   end
 
   defp read_input_file(input_path) do
