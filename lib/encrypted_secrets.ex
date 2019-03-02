@@ -4,6 +4,7 @@ defmodule EncryptedSecrets do
   alias EncryptedSecrets.WriteSecrets, as: WriteSecrets
 
   def setup(key_path \\ "config/master.key", secrets_path \\ "config/secrets.yml") do
+    # TODO `cond` felt cumbersome here, but if seems anti-elixir.  Investigate
     if File.exists?(key_path) || File.exists?(secrets_path) do
       IO.puts("This will remove your existing secrets and give you a new master key")
       IO.puts("Continue? (y/N)")
