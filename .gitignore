@@ -23,3 +23,5 @@ erl_crash.dump
 encrypted_secrets-*.tar
 
 .elixir_ls/
+
+development/
