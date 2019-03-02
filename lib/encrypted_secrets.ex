@@ -3,7 +3,11 @@ defmodule EncryptedSecrets do
   alias EncryptedSecrets.ReadSecrets, as: ReadSecrets
   alias EncryptedSecrets.WriteSecrets, as: WriteSecrets
 
-  def setup(key_path \\ "config/master.key", secrets_path \\ "config/secrets.yml") do
+  @secrets_file_location "config/secrets.yml"
+  @key_file_location "config/master.key"
+  @key_file_contents File.read!(@key_file_location)
+
+  def setup(key_path \\ @key_file_location, secrets_path \\ @secrets_file_location) do
     # TODO `cond` felt cumbersome here, but if seems anti-elixir.  Investigate
     if File.exists?(key_path) || File.exists?(secrets_path) do
       IO.puts("This will remove your existing secrets and give you a new master key")
@@ -23,23 +27,26 @@ defmodule EncryptedSecrets do
     end
   end
 
-  def setup!(key_path \\ "config/master.key", secrets_path \\ "config/secrets.yml") do
+  def setup!(key_path \\ @key_file_location, secrets_path \\ @secrets_file_location) do
     MasterKey.create(key_path)
     WriteSecrets.write_blank_file(File.read!(key_path), secrets_path)
   end
 
-  def edit(key, secrets_path \\ "config/secrets.yml") do
+  def edit(key \\ @key_file_contents, secrets_path \\ @secrets_file_location) do
     {:ok, tmp_filepath} = ReadSecrets.read_into_file(key, secrets_path)
-    {_retval, 0} = System.cmd("code", ["--wait", tmp_filepath])
+
+    [editor | options] = String.split(System.get_env("EDITOR"), " ")
+    {_retval, 0} = System.cmd(editor, options ++ [tmp_filepath])
+
     {:ok, _path} = WriteSecrets.write_file(key, tmp_filepath, secrets_path)
     :ok = File.rm(tmp_filepath)
   end
 
-  def read(key, secrets_path \\ "config/secrets.yml") do
+  def read(key \\ @key_file_contents, secrets_path \\ @secrets_file_location) do
     ReadSecrets.read_into_map(key, secrets_path)
   end
 
-  def read!(key, secrets_path \\ "config/secrets.yml") do
+  def read!(key \\ @key_file_contents, secrets_path \\ @secrets_file_location) do
     {:ok, secrets_map} = ReadSecrets.read_into_map(key, secrets_path)
 
     secrets_map
