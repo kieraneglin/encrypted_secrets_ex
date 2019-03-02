@@ -11,8 +11,12 @@ defmodule EncryptedSecrets do
       input_string = IO.read(:stdio, :line) |> String.trim() |> String.downcase()
 
       cond do
-        String.starts_with?(input_string, "y") -> setup!(key_path, secrets_path)
-        true -> {:error, "Operation aborted"}
+        String.starts_with?(input_string, "y") ->
+          setup!(key_path, secrets_path)
+          IO.puts("Operation completed! Make sure #{key_path} is in your .gitignore")
+
+        true ->
+          {:error, "Operation aborted"}
       end
     else
       setup!(key_path, secrets_path)
