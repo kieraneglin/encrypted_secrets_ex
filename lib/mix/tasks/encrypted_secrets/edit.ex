@@ -7,6 +7,9 @@ defmodule Mix.Tasks.EncryptedSecrets.Edit do
     Example: `EDITOR='code --wait' mix encrypted_secrets.edit`
   """
   def run(_) do
-    EncryptedSecrets.edit()
+    case EncryptedSecrets.edit() do
+      :ok -> nil
+      {:error, err} -> raise err
+    end
   end
 end

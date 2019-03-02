@@ -13,6 +13,7 @@ defmodule EncryptedSecrets.ReadSecrets do
     |> unencrypt_file_contents(key)
     |> parse_yaml()
   rescue
+    e in File.Error -> {:error, e.message}
     e in RuntimeError -> {:error, e.message}
     e in ArgumentError -> {:error, e.message}
   end
@@ -28,6 +29,7 @@ defmodule EncryptedSecrets.ReadSecrets do
     |> unencrypt_file_contents(key)
     |> write_temp_file(input_path)
   rescue
+    e in File.Error -> {:error, e.message}
     e in RuntimeError -> {:error, e.message}
     e in ArgumentError -> {:error, e.message}
   end

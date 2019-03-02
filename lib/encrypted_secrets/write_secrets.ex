@@ -14,6 +14,7 @@ defmodule EncryptedSecrets.WriteSecrets do
     |> encrypt_message(key)
     |> write_encrypted_file(output_path)
   rescue
+    e in File.Error -> {:error, e.message}
     e in RuntimeError -> {:error, e.message}
     e in ArgumentError -> {:error, e.message}
   end
@@ -28,6 +29,7 @@ defmodule EncryptedSecrets.WriteSecrets do
     encrypt_message("", key)
     |> write_encrypted_file(output_path)
   rescue
+    e in File.Error -> {:error, e.message}
     e in RuntimeError -> {:error, e.message}
     e in ArgumentError -> {:error, e.message}
   end

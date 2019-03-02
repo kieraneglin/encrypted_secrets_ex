@@ -58,14 +58,23 @@ defmodule EncryptedSecrets do
   def edit(key \\ File.read!(@key_file_location), secrets_path \\ @secrets_file_location) do
     ensure_editor_set()
 
-    {:ok, tmp_filepath} = ReadSecrets.read_into_file(key, secrets_path)
-    [editor | options] = String.split(System.get_env("EDITOR"), " ")
-    {_retval, 0} = System.cmd(editor, options ++ [tmp_filepath])
+    case ReadSecrets.read_into_file(key, secrets_path) do
+      {:ok, tmp_filepath} ->
+        [editor | options] = String.split(System.get_env("EDITOR"), " ")
+        {_retval, 0} = System.cmd(editor, options ++ [tmp_filepath])
 
-    {:ok, _path} = WriteSecrets.write_file(key, tmp_filepath, secrets_path)
-    File.rm(tmp_filepath)
+        case WriteSecrets.write_file(key, tmp_filepath, secrets_path) do
+          {:ok, _path} ->
+            File.rm(tmp_filepath)
+            IO.puts("Secrets saved")
 
-    IO.puts("Secrets saved")
+          {:error, err} ->
+            {:error, err}
+        end
+
+      {:error, err} ->
+        {:error, err}
+    end
   end
 
   @doc """

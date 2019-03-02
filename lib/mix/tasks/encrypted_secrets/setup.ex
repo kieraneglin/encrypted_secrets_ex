@@ -5,6 +5,9 @@ defmodule Mix.Tasks.EncryptedSecrets.Setup do
     "Creates key and secrets file in config/"
   """
   def run(_) do
-    EncryptedSecrets.setup()
+    case EncryptedSecrets.setup() do
+      {:ok, _secrets_path} -> nil
+      {:error, err} -> raise err
+    end
   end
 end
