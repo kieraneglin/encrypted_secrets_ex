@@ -3,6 +3,8 @@ defmodule EncryptedSecrets.WriteSecrets do
     Provides a method for reading a file then writing it as an encrypted string
   """
 
+  alias EncryptedSecrets.Encryption, as: Encryption
+
   @doc """
     Reads the contents of `input_path`, encrypts it using `key`,
      and writes it to `output_path`
@@ -42,7 +44,7 @@ defmodule EncryptedSecrets.WriteSecrets do
   defp encrypt_message(input_text, key) do
     {:ok, {init_vec, cipher_text}} =
       Base.decode16!(key)
-      |> ExCrypto.encrypt(input_text)
+      |> Encryption.encrypt(input_text)
 
     {Base.encode16(init_vec), Base.encode16(cipher_text)}
   end
