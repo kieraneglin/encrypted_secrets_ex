@@ -2,7 +2,7 @@ defmodule Mix.Tasks.EncryptedSecrets.Setup do
   use Mix.Task
 
   @doc """
-    "Creates key and secrets file in config/"
+    "Creates key and secrets file in config/secrets/"
   """
   def run(_) do
     case EncryptedSecrets.setup() do
