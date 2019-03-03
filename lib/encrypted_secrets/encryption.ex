@@ -22,24 +22,36 @@ defmodule EncryptedSecrets.Encryption do
     Encrypts `clear_text` using the given key
   """
   def encrypt(key, clear_text) do
-    initialization_vector = :crypto.strong_rand_bytes(16)
+    init_vec = :crypto.strong_rand_bytes(16)
     payload = pad(clear_text, @aes_block_size)
 
-    case :crypto.block_encrypt(:aes_cbc256, key, initialization_vector, payload) do
+    case :crypto.block_encrypt(:aes_cbc256, key, init_vec, payload) do
       {cipher_text, cipher_tag} ->
         {authentication_data, _clear_text} = payload
-        {:ok, {authentication_data, {initialization_vector, cipher_text, cipher_tag}}}
+        {:ok, {authentication_data, {init_vec, cipher_text, cipher_tag}}}
 
       <<cipher_text::binary>> ->
-        {:ok, {initialization_vector, cipher_text}}
+        {:ok, {init_vec, cipher_text}}
 
       err ->
         {:error, err}
     end
   end
 
+  def decrypt(key, init_vec, cipher_text) do
+    case :crypto.block_decrypt(:aes_cbc256, key, init_vec, cipher_text) do
+      :error -> {:error, :decrypt_failed}
+      plain_text -> {:ok, unpad(plain_text)}
+    end
+  end
+
   defp pad(data, block_size) do
     to_add = block_size - rem(byte_size(data), block_size)
     data <> to_string(:string.chars(to_add, to_add))
+  end
+
+  defp unpad(data) do
+    to_remove = :binary.last(data)
+    :binary.part(data, 0, byte_size(data) - to_remove)
   end
 end

@@ -4,6 +4,7 @@ defmodule EncryptedSecrets.ReadSecrets do
   """
 
   alias EncryptedSecrets.Helpers, as: Helpers
+  alias EncryptedSecrets.Encryption, as: Encryption
 
   @doc """
     Reads encrypted secrets file at `input_path` using `key`, returning a map
@@ -47,7 +48,7 @@ defmodule EncryptedSecrets.ReadSecrets do
       String.split(input_text, "|")
       |> Enum.map(&Base.decode16!/1)
 
-    case ExCrypto.decrypt(Base.decode16!(key), init_vec, cipher_text) do
+    case Encryption.decrypt(Base.decode16!(key), init_vec, cipher_text) do
       {:ok, contents} -> contents
       {:error, err} -> raise "Error decrypting secrets (#{err})"
     end
