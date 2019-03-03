@@ -34,7 +34,6 @@ defmodule EncryptedSecrets.MixProject do
 
   defp package() do
     [
-      name: "EncryptedSecrets",
       licenses: ["MIT"],
       links: %{repo: "https://github.com/kieraneglin/encrypted_secrets_ex"}
     ]
