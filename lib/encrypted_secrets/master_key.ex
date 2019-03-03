@@ -3,6 +3,8 @@ defmodule EncryptedSecrets.MasterKey do
     Provides a method for creating and saving a random master encryption key
   """
 
+  alias EncryptedSecrets.Encryption, as: Encryption
+
   @doc """
     Creates a random key and saves it to the specified `filepath`
 
@@ -16,9 +18,8 @@ defmodule EncryptedSecrets.MasterKey do
   end
 
   defp create_random_key do
-    {:ok, key} = ExCrypto.generate_aes_key(:aes_256, :bytes)
-
-    Base.encode16(key)
+    Encryption.generate_aes_key()
+    |> Base.encode16()
   end
 
   defp save_master_key(key, output_path) do
