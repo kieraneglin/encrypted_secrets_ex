@@ -5,7 +5,7 @@ defmodule EncryptedSecrets.MixProject do
     [
       app: :encrypted_secrets,
       version: "0.1.0",
-      elixir: "~> 1.7",
+      elixir: "~> 1.5",
       description: description(),
       package: package(),
       source_url: "https://github.com/kieraneglin/encrypted_secrets_ex",
