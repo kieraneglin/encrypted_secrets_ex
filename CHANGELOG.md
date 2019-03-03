@@ -4,6 +4,7 @@
 
 - Removed ExCrypto in favour of using Erlang functions
 - Added information, caveats to README
+- Added ability to specify key when editing secrets
 
 ## 0.1.0
 
