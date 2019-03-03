@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.1
+
+- Removed ExCrypto in favour of using Erlang functions
+- Added information, caveats to README
+
 ## 0.1.0
 
 Initial release!

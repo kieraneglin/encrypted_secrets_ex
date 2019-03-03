@@ -2,6 +2,8 @@
 
 EncryptedSecrets allows you to store your application's secrets inside your VCS to ease distribution and updating, à la [Rails 5.2 Encrypted Credentials][1]
 
+This gives you the ability to easily distribute secrets among teammates/workstations (no more discrepancies between your team's secrets or having to update workstations after you change a secret!). It also reduces the need to manage environment variables in your remote servers.
+
 [Documentation][2]
 
 [View on hex.pm][3]
@@ -15,6 +17,37 @@ def deps do
   ]
 end
 ```
+
+## Security
+
+### What algorithm does this use to encrypt files?
+
+AES256
+
+### How is the `master.key` generated?
+
+Using `:crypto.strong_and_bytes/1` to generate a 256 bit key.
+See `EncryptedSecrets.Encryption.generate_aes_key/0` for the implementation
+
+### What is the secrets file?
+
+It's a combination the initialization vector and YAML (encrypted using the aforementioned 256 bit key). The initialization vector is safe to include in the secrets file. The only file you need to keep secret is the `master.key`
+
+### Why AES?
+
+AES is the leading algorithm for encrypting and decrypting data. It is the de-factco algorithm as chosen by the NIST and it is absolutely battle-proven
+
+### How did you implement the AES encryption?
+
+I avoided "rolling my own" as much as possible. I delegate directly to the underlying Erlang functions for encryption and decryption. If you're interested, I strongly recommend you explore my implementation in `EncryptedSecrets.Encryption.encrypt/2` and `EncryptedSecrets.Encryption.decrypt/3`
+
+### Anything else?
+
+Yeah, a few things:
+
+- If you're security minded, ensure you've reviewed the methods in `EncryptedSecrets.Encryption` and pull from this repo directly instead of hex.pm
+- I am not a cryptographer. I am your average programmer who was missing a feature that I loved about Rails
+- I mention it constantly, but _please_ ensure that you've added the master key to your `.gitignore`
 
 ## Usage
 
