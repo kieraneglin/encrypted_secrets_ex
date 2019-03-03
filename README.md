@@ -58,7 +58,7 @@ This package is intended for use with [Phoenix][4], but it can be used with any 
 After installation, run this command in your project root to create a new key and secrets file:
 
 ```bash
-mix EncryptedSecrets.setup
+mix EncryptedSecrets.Setup
 ```
 
 This places two files in `config/secrets/`. Don't forget to put the `master.key` in your `.gitignore`!
@@ -68,8 +68,10 @@ This places two files in `config/secrets/`. Don't forget to put the `master.key`
 To edit your secrets, you must ensure your `EDITOR` is in "wait" mode or else the files won't be saved after editing. This looks like `code --wait` for VSCode or `subl --wait` for Sublime Text. All together, the command to edit looks like this:
 
 ```bash
-EDITOR='code --wait' mix EncryptedSecrets.edit
+EDITOR='code --wait' mix EncryptedSecrets.Edit
 ```
+
+If you don't have the `master.key` saved to your filesystem, you can explicitly specify the key by appending it when calling `EncryptedSecrets.Edit`. This is useful when you have specified your key as an environment variable.
 
 The secrets file is YAML that supports all the usual datatypes, so nested maps and lists are fair game.
 
