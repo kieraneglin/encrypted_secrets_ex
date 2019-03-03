@@ -19,7 +19,7 @@ defmodule EncryptedSecrets.Encryption do
   end
 
   @doc """
-    Encrypts `clear_text` using the given key
+    Encrypts `clear_text` using the given `key`
   """
   def encrypt(key, clear_text) do
     init_vec = :crypto.strong_rand_bytes(16)
@@ -38,6 +38,9 @@ defmodule EncryptedSecrets.Encryption do
     end
   end
 
+  @doc """
+    Encrypts `cipher_text` using the given `key` and `init_vec`
+  """
   def decrypt(key, init_vec, cipher_text) do
     case :crypto.block_decrypt(:aes_cbc256, key, init_vec, cipher_text) do
       :error -> {:error, :decrypt_failed}
