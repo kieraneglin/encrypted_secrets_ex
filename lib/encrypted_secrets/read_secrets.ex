@@ -44,11 +44,16 @@ defmodule EncryptedSecrets.ReadSecrets do
   end
 
   defp unencrypt_file_contents(input_text, key) do
+    key_as_binary =
+      String.trim(key)
+      |> Base.decode16!()
+
     [init_vec, cipher_text] =
       String.split(input_text, "|")
+      |> Enum.map(&String.trim/1)
       |> Enum.map(&Base.decode16!/1)
 
-    case Encryption.decrypt(Base.decode16!(key), init_vec, cipher_text) do
+    case Encryption.decrypt(key_as_binary, init_vec, cipher_text) do
       {:ok, contents} -> contents
       {:error, err} -> raise "Error decrypting secrets (#{err})"
     end

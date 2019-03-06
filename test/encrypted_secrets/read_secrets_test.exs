@@ -10,9 +10,16 @@ defmodule EncryptedSecretsTest.ReadSecretsTest do
     @key_contents File.read!(File.cwd!() <> "/test/files/master.key")
     @enc_secrets @base_dir <> "/enc_secrets.yml"
     @enc_invalid @base_dir <> "/enc_invalid.yml"
+    @enc_whitespace @base_dir <> "/enc_secrets_with_whitespace.yml"
 
     test "successfully reads encrypted secrets into map" do
       {:ok, secrets} = ReadSecrets.read_into_map(@key_contents, @enc_secrets)
+
+      assert %{foo: %{bar: "baz"}} == secrets
+    end
+
+    test "successfully reads encrypted secrets into map, even with whitespace" do
+      {:ok, secrets} = ReadSecrets.read_into_map(@key_contents, @enc_whitespace)
 
       assert %{foo: %{bar: "baz"}} == secrets
     end

@@ -43,7 +43,8 @@ defmodule EncryptedSecrets.WriteSecrets do
 
   defp encrypt_message(input_text, key) do
     {:ok, {init_vec, cipher_text}} =
-      Base.decode16!(key)
+      String.trim(key)
+      |> Base.decode16!()
       |> Encryption.encrypt(input_text)
 
     {Base.encode16(init_vec), Base.encode16(cipher_text)}
