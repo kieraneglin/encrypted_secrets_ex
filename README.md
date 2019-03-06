@@ -13,7 +13,7 @@ This gives you the ability to easily distribute secrets among teammates/workstat
 ```elixir
 def deps do
   [
-    {:encrypted_secrets, "~> 0.1.1"}
+    {:encrypted_secrets, "~> 0.1.2"}
   ]
 end
 ```

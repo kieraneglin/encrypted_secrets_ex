@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2
+
+- Fixed bug where whitespace would break encryption/decryption
+
 ## 0.1.1
 
 - Removed ExCrypto in favour of using Erlang functions
