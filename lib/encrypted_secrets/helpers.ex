@@ -28,11 +28,12 @@ defmodule EncryptedSecrets.Helpers do
   """
   def append_to_gitignore(file_to_ignore) do
     gitignore_location = ".gitignore"
+    message = "\n# Master key should never be in version control\n" <> file_to_ignore
 
     case File.exists?(gitignore_location) do
       true ->
         File.open!(gitignore_location, [:append], fn file ->
-          IO.puts(file, file_to_ignore)
+          IO.puts(file, message)
         end)
 
       _ ->

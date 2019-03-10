@@ -26,20 +26,13 @@ defmodule EncryptedSecrets do
 
       cond do
         String.starts_with?(input_string, "y") ->
-          setup!(key_path, secrets_path)
-          Helpers.append_to_gitignore(key_path)
-
-          IO.puts(success_message)
-          {:ok, secrets_path}
+          setup_and_append_to_gitignore(key_path, secrets_path, success_message)
 
         true ->
           {:error, "Operation aborted"}
       end
     else
-      setup!(key_path, secrets_path)
-      IO.puts(success_message)
-
-      {:ok, secrets_path}
+      setup_and_append_to_gitignore(key_path, secrets_path, success_message)
     end
   end
 
@@ -103,6 +96,14 @@ defmodule EncryptedSecrets do
       {:ok, secrets_map} -> secrets_map
       {:error, _err} -> raise "Could not read secrets file"
     end
+  end
+
+  defp setup_and_append_to_gitignore(key_path, secrets_path, success_message) do
+    setup!(key_path, secrets_path)
+    Helpers.append_to_gitignore(key_path)
+    IO.puts(success_message)
+
+    {:ok, secrets_path}
   end
 
   defp ensure_editor_set() do
