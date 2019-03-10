@@ -23,6 +23,7 @@ This gives you the ability to easily distribute secrets among teammates/workstat
   - [Editing](#editing)
   - [Reading](#reading)
     - [Environment-specific secrets](#environment-specific-secrets)
+  - [Use with Distillery](#use-with-distillery)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -79,7 +80,7 @@ After installation, run this command in your project root to create a new key an
 mix EncryptedSecrets.Setup
 ```
 
-This places two files in `config/secrets/`. This task attempts to append the `master.key` file to your `.gitignore`, but you should confirm this! The `master.key` should never be placed in your VCS.
+This places two files in `priv/secrets/`. The task attempts to append the `master.key` file to your `.gitignore`, but you should confirm this! The `master.key` should never be placed in your VCS.
 
 ### Editing
 
@@ -97,7 +98,7 @@ After editing, save and close the file to re-encrypt it. If there's an error (ei
 
 ### Reading
 
-Once you've set up your credentials, you can access them with `EncryptedSecrets.read/2`. It will look for the files in `config/secrets/` by default, so you don't need to specify any arguments unless you've moved the master key or secrets files. If you're deploying to production and you don't have a `master.key` file, save the key as an env variable and pass it as the first argument.
+Once you've set up your credentials, you can access them with `EncryptedSecrets.read/2`. It will look for the files in `priv/secrets/` by default, so you don't need to specify any arguments unless you've moved the master key or secrets files. If you're deploying to production and you don't have a `master.key` file, save the key as an env variable and pass it as the first argument.
 
 In the context of Phoenix, here's how you'd configure your application to access your secrets:
 
@@ -137,6 +138,29 @@ Application.put_env(
   :app_name,
   :secrets,
   EncryptedSecrets.read!()[Mix.env()]
+)
+```
+
+### Use with Distillery
+
+If you intend to package your releases with Distillery, you'll need to make a few changes:
+
+```elixir
+# In AppName.Application#start/2
+
+# Alternatively, read key from an environment variable
+master_key = File.read!(Application.app_dir(:app_name, "priv/secrets/master.key"))
+secrets_file = Application.app_dir(:app_name, "priv/secrets/secrets.yml.enc")
+
+# Optional, only required if you want easy access to environment-specific
+# secrets. You must set `:env` in your `config/<env>.exs` files
+current_env = Application.get_env(:app_name, :env)
+
+Application.put_env(
+  :app_name,
+  :secrets,
+  # Remove `[current_env]` unless you've followed the optional step above
+  EncryptedSecrets.read!(master_key, secrets_file)[current_env]
 )
 ```
 
