@@ -21,6 +21,20 @@ defmodule EncryptedSecrets.Helpers do
     {:error, err}
   end
 
+  def append_to_gitignore(file_to_ignore) do
+    gitignore_location = ".gitignore"
+
+    case File.exists?(gitignore_location) do
+      true ->
+        File.open!(gitignore_location, [:append], fn file ->
+          IO.puts(file, file_to_ignore)
+        end)
+
+      _ ->
+        {:error, ".gitignore not found"}
+    end
+  end
+
   defp to_atom_map(map) when is_map(map) do
     Map.new(map, fn {k, v} -> {String.to_atom(k), to_atom_map(v)} end)
   end

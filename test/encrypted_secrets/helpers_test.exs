@@ -13,7 +13,7 @@ defmodule EncryptedSecretsTest.HelpersTest do
       assert %{foo: %{bar: "baz"}} == atom_map
     end
 
-    test "it passes errors stright through" do
+    test "it passes errors straight through" do
       assert {:error, "No good"} == Helpers.convert_map_keys({:error, "No good"})
     end
   end
