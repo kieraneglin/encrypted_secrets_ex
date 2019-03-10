@@ -4,7 +4,7 @@ defmodule EncryptedSecrets.MixProject do
   def project do
     [
       app: :encrypted_secrets,
-      version: "0.1.2",
+      version: "0.2.0",
       elixir: "~> 1.5",
       description: description(),
       package: package(),
