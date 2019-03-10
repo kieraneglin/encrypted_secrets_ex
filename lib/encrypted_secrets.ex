@@ -2,11 +2,12 @@ defmodule EncryptedSecrets do
   @moduledoc """
     Provides methods for setting up, editing, and reading of encrypted secrets
   """
+  alias EncryptedSecrets.Helpers, as: Helpers
   alias EncryptedSecrets.MasterKey, as: MasterKey
   alias EncryptedSecrets.ReadSecrets, as: ReadSecrets
   alias EncryptedSecrets.WriteSecrets, as: WriteSecrets
 
-  @base_directory "config/secrets"
+  @base_directory "priv/secrets"
   @secrets_file_location @base_directory <> "/secrets.yml.enc"
   @key_file_location @base_directory <> "/master.key"
 
@@ -26,6 +27,8 @@ defmodule EncryptedSecrets do
       cond do
         String.starts_with?(input_string, "y") ->
           setup!(key_path, secrets_path)
+          Helpers.append_to_gitignore(key_path)
+
           IO.puts(success_message)
           {:ok, secrets_path}
 
