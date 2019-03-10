@@ -21,6 +21,11 @@ defmodule EncryptedSecrets.Helpers do
     {:error, err}
   end
 
+  @doc """
+    Appends a given file to .gitignore
+
+    Returns `:ok | {:error, error}`
+  """
   def append_to_gitignore(file_to_ignore) do
     gitignore_location = ".gitignore"
 

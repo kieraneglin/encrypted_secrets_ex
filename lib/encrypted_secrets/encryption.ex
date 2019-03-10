@@ -39,7 +39,7 @@ defmodule EncryptedSecrets.Encryption do
   end
 
   @doc """
-    Encrypts `cipher_text` using the given `key` and `init_vec`
+    Decrypts `cipher_text` using the given `key` and `init_vec`
   """
   def decrypt(key, init_vec, cipher_text) do
     case :crypto.block_decrypt(:aes_cbc256, key, init_vec, cipher_text) do
