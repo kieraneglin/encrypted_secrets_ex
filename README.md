@@ -8,6 +8,24 @@ This gives you the ability to easily distribute secrets among teammates/workstat
 
 [View on hex.pm][3]
 
+## Contents
+
+- [Installation](#installation)
+- [Security](#security)
+  - [What algorithm does this use to encrypt files?](#what-algorithm-does-this-use-to-encrypt-files)
+  - [How is the `master.key` generated?](#how-is-the-masterkey-generated)
+  - [What is the secrets file?](#what-is-the-secrets-file)
+  - [Why AES?](#why-aes)
+  - [How did you implement the AES encryption?](#how-did-you-implement-the-aes-encryption)
+  - [Anything else?](#anything-else)
+- [Usage](#usage)
+  - [Setup](#setup)
+  - [Editing](#editing)
+  - [Reading](#reading)
+    - [Environment-specific secrets](#environment-specific-secrets)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Installation
 
 ```elixir
@@ -47,7 +65,7 @@ Yeah, a few things:
 
 - If you're security minded, ensure you've reviewed the methods in `EncryptedSecrets.Encryption` and pull from this repo directly instead of hex.pm
 - I am not a cryptographer. I am your average programmer who was missing a feature that I loved about Rails
-- I mention it constantly, but _please_ ensure that you've added the master key to your `.gitignore`
+- I mention it constantly, but _please_ ensure that the master key is to your `.gitignore`
 
 ## Usage
 
@@ -61,7 +79,7 @@ After installation, run this command in your project root to create a new key an
 mix EncryptedSecrets.Setup
 ```
 
-This places two files in `config/secrets/`. Don't forget to put the `master.key` in your `.gitignore`!
+This places two files in `config/secrets/`. This task attempts to append the `master.key` file to your `.gitignore`, but you should confirm this! The `master.key` should never be placed in your VCS.
 
 ### Editing
 
