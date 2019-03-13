@@ -45,7 +45,7 @@ AES256
 
 ### How is the `master.key` generated?
 
-Using `:crypto.strong_and_bytes/1` to generate a 256 bit key.
+Using `:crypto.strong_rand_bytes/1` to generate a 256 bit key.
 See `EncryptedSecrets.Encryption.generate_aes_key/0` for the implementation
 
 ### What is the secrets file?
