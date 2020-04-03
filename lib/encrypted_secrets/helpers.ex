@@ -17,8 +17,8 @@ defmodule EncryptedSecrets.Helpers do
     {:ok, to_atom_map(map)}
   end
 
-  def convert_map_keys({:error, err}) do
-    {:error, err}
+  def convert_map_keys({:error, %{message: message}}) do
+    {:error, message}
   end
 
   @doc """
