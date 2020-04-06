@@ -10,6 +10,7 @@ defmodule EncryptedSecrets do
   @base_directory "priv/secrets"
   @secrets_file_location @base_directory <> "/secrets.yml.enc"
   @key_file_location @base_directory <> "/master.key"
+  @editor_args_regex ~r/ (-\w{2,}|-\w\s+"(?:[^"\\]*(?:\\.[^"\\]*)*)"|-\w\s+'(?:[^'\\]*(?:\\.[^'\\]*)*)'|--\w+="(?:[^"\\]*(?:\\.[^"\\]*)*)"|--\w+='(?:[^'\\]*(?:\\.[^'\\]*)*)'|--\w+=[^\s]+|-\w)/
 
   @doc """
     Creates a new key and secrets file, prompting you if the files already exist
@@ -59,7 +60,13 @@ defmodule EncryptedSecrets do
 
     case ReadSecrets.read_into_file(key, secrets_path) do
       {:ok, tmp_filepath} ->
-        [editor | options] = String.split(System.get_env("EDITOR"), " ")
+        [editor | options] = String.split(
+          System.get_env("EDITOR"),
+          @editor_args_regex,
+          include_captures: true,
+          trim: true
+        )
+        options = Enum.map(options, &String.trim/1)
         {_retval, 0} = System.cmd(editor, options ++ [tmp_filepath])
 
         case WriteSecrets.write_file(key, tmp_filepath, secrets_path) do
