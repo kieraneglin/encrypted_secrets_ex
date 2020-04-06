@@ -94,7 +94,7 @@ defmodule EncryptedSecrets do
   def read!(key \\ File.read!(@key_file_location), secrets_path \\ @secrets_file_location) do
     case ReadSecrets.read_into_map(key, secrets_path) do
       {:ok, secrets_map} -> secrets_map
-      {:error, _err} -> raise "Could not read secrets file"
+      {:error, message} -> raise "Could not read secrets file: #{message}"
     end
   end
 

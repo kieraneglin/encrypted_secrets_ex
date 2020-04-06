@@ -14,7 +14,7 @@ defmodule EncryptedSecretsTest.HelpersTest do
     end
 
     test "it passes errors straight through" do
-      assert {:error, "No good"} == Helpers.convert_map_keys({:error, "No good"})
+      assert {:error, "No good"} == Helpers.convert_map_keys({:error, %{message: "No good"}})
     end
   end
 end
