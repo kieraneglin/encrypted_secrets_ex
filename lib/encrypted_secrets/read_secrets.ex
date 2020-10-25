@@ -6,6 +6,8 @@ defmodule EncryptedSecrets.ReadSecrets do
   alias EncryptedSecrets.Helpers, as: Helpers
   alias EncryptedSecrets.Encryption, as: Encryption
 
+  @cleaner_script_path Path.join([:code.priv_dir(:encrypted_secrets), "tmp_file_cleaner.sh"])
+
   @doc """
     Reads encrypted secrets file at `input_path` using `key`, returning a map
 
@@ -69,6 +71,10 @@ defmodule EncryptedSecrets.ReadSecrets do
     # Maybe to avoid file collisions in a really dumb way?  Who knows.  Anyway, I'm doing it
     random_file_suffix = :crypto.strong_rand_bytes(8) |> Base.encode16()
     filename = "#{working_directory}/secrets_tmp_#{random_file_suffix}.yml"
+
+    if match?({:unix, _}, :os.type()) do
+      Task.async(fn -> System.cmd(@cleaner_script_path, [filename]) end)
+    end
 
     case File.write(filename, yaml_string) do
       :ok -> {:ok, filename}
