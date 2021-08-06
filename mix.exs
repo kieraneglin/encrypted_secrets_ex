@@ -22,7 +22,7 @@ defmodule EncryptedSecrets.MixProject do
 
   defp deps do
     [
-      {:ex_doc, "~> 0.22", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.24", only: :dev, runtime: false},
       {:yaml_elixir, "~> 2.5"}
     ]
   end
