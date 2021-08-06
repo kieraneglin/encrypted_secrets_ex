@@ -29,10 +29,12 @@ This gives you the ability to easily distribute secrets among teammates/workstat
 
 ## Installation
 
+Due to the "new" Erlang crypto API and `crypto_one_time` usage, a minimum OTP version of 22 is required for 0.3.0 and up.  If you cannot use these APIs you must stick to version 0.2.4.
+
 ```elixir
 def deps do
   [
-    {:encrypted_secrets, "~> 0.2.4"}
+    {:encrypted_secrets, "~> 0.3.0"}
   ]
 end
 ```
